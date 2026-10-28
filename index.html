@@ -1,0 +1,574 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#DCEAF5">
+<title>Dharamshala Split</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M2 28 L12 10 L18 20 L22 14 L30 28Z' fill='%233D5A80'/%3E%3Cpath d='M12 10 L9 15.5 L12 14 L15 15.5Z' fill='white'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Inter:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: one phone-width column — mountain hero with prayer flags, a tap-to-reveal trip card, crew, settle-up, log; tab bar pinned at the bottom. */
+:root {
+  --bg: #F5F7FA; --surface: #FFFFFF; --ink: #1B2A3A; --muted: #4F6072;
+  --line: #E1E7EE; --line-strong: #C9D3DE;
+  --primary: #3D5A80; --on-primary: #FFFFFF; --primary-soft: #EAF1F8;
+  --accent: #E8833A; --accent-soft: #FCE9DA; --on-accent-soft: #6B3410;
+  --pos: #1F7A50; --neg: #B23A3A;
+  --sky: #DCEAF5; --sun: #F2B880; --ridge1: #98C1D9; --ridge2: #3D5A80; --ridge3: #1B2A3A;
+  --snow: #FFFFFF; --snow2: #E9F1F8; --rope: #4F6072; --shadow: rgba(27,42,58,0.12);
+  --font-display: 'Bricolage Grotesque', ui-sans-serif, system-ui, sans-serif;
+  --font-body: Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --gl: max(20px, env(safe-area-inset-left, 0px));
+  --gr: max(20px, env(safe-area-inset-right, 0px));
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0F1720; --surface: #17222E; --ink: #E8EEF4; --muted: #A3B1BF;
+  --line: #263443; --line-strong: #3A4A5C;
+  --primary: #8DB4DE; --on-primary: #0F1720; --primary-soft: #1E2F42;
+  --accent: #E8833A; --accent-soft: #3A2516; --on-accent-soft: #F6C9A6;
+  --pos: #6FD3A0; --neg: #FF9C93;
+  --sky: #1A2838; --sun: #E9C98F; --ridge1: #2E4560; --ridge2: #22364D; --ridge3: #0F1720;
+  --snow: #C9D6E2; --snow2: #9FB2C4; --rope: #7F91A3; --shadow: rgba(0,0,0,0.4);
+  color-scheme: dark;
+} }
+:root[data-theme="dark"] {
+  --bg: #0F1720; --surface: #17222E; --ink: #E8EEF4; --muted: #A3B1BF;
+  --line: #263443; --line-strong: #3A4A5C;
+  --primary: #8DB4DE; --on-primary: #0F1720; --primary-soft: #1E2F42;
+  --accent: #E8833A; --accent-soft: #3A2516; --on-accent-soft: #F6C9A6;
+  --pos: #6FD3A0; --neg: #FF9C93;
+  --sky: #1A2838; --sun: #E9C98F; --ridge1: #2E4560; --ridge2: #22364D; --ridge3: #0F1720;
+  --snow: #C9D6E2; --snow2: #9FB2C4; --rope: #7F91A3; --shadow: rgba(0,0,0,0.4);
+  color-scheme: dark;
+}
+html { height: 100%; padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+body { height: 100%; margin: 0; }
+[hidden] { display: none !important; }
+img { max-width: 100%; }
+body { background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 15px; -webkit-font-smoothing: antialiased; }
+*, html { box-sizing: border-box; }
+button { font: inherit; color: inherit; cursor: pointer; }
+button:focus-visible, input:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+h1, h2 { text-wrap: balance; }
+
+.app { height: 100%; max-width: 480px; margin: 0 auto; display: flex; flex-direction: column; background: var(--bg); position: relative; }
+.scroll { flex: 1 1 auto; min-height: 0; overflow-y: auto; overscroll-behavior: contain; }
+
+/* hero */
+.hero { position: relative; height: 260px; background: var(--sky); overflow: hidden; }
+.hero > svg { position: absolute; inset: 0; width: 100%; height: 260px; }
+.hero-text { position: relative; padding: 60px var(--gr) 0 var(--gl); }
+.eyebrow { margin: 0; font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink); }
+.hero h1 { margin: 6px 0 0; font-family: var(--font-display); font-size: 36px; font-weight: 800; line-height: 1.02; }
+.icon-btn { position: absolute; top: 56px; right: max(12px, env(safe-area-inset-right, 0px)); width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--line); background: var(--surface); display: grid; place-items: center; color: var(--ink); }
+.sync { display: inline-flex; align-items: center; gap: 6px; margin-top: 8px; font-size: 12px; font-weight: 600; color: var(--ink); background: color-mix(in srgb, var(--surface) 70%, transparent); padding: 3px 9px; border-radius: 999px; }
+.dot { width: 7px; height: 7px; border-radius: 50%; background: var(--muted); }
+.dot.live { background: var(--pos); }
+
+/* trip card */
+.card-wrap { padding: 0 max(16px, env(safe-area-inset-right, 0px)) 0 max(16px, env(safe-area-inset-left, 0px)); margin-top: -30px; position: relative; }
+.trip-card { width: 100%; text-align: left; border: 1px solid var(--line); background: var(--surface); border-radius: 22px; padding: 18px; box-shadow: 0 10px 28px var(--shadow); display: flex; flex-direction: column; gap: 10px; }
+.row-between { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.label { font-size: 13px; font-weight: 600; color: var(--muted); }
+.big { font-family: var(--font-display); font-size: 42px; font-weight: 800; line-height: 1; font-variant-numeric: tabular-nums; }
+.bar { height: 8px; border-radius: 4px; background: var(--line); overflow: hidden; }
+.bar > span { display: block; height: 100%; background: var(--accent); border-radius: 4px; }
+.bar.over > span { background: var(--neg); }
+.small { font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.peek { display: flex; align-items: center; gap: 14px; }
+.peek-ico { width: 48px; height: 48px; border-radius: 14px; background: var(--accent-soft); color: var(--on-accent-soft); display: grid; place-items: center; flex: 0 0 auto; }
+.link { border: 0; background: none; padding: 0; color: var(--primary); font-weight: 700; text-decoration: underline; text-underline-offset: 2px; }
+
+/* sections */
+.section { padding: 22px var(--gr) 4px var(--gl); display: flex; flex-direction: column; gap: 10px; }
+.section h2 { margin: 0; font-size: 15px; font-weight: 700; }
+.crew { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+.member { display: flex; flex-direction: column; align-items: center; gap: 4px; text-align: center; min-width: 0; }
+.member img { width: 58px; height: 58px; border-radius: 50%; border: 3px solid var(--surface); box-shadow: 0 2px 6px var(--shadow); }
+.member .name { font-size: 13px; font-weight: 600; max-width: 100%; line-height: 1.2; overflow-wrap: anywhere; }
+.status { font-size: 12px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.pos { color: var(--pos); } .neg { color: var(--neg); } .mute { color: var(--muted); }
+
+.list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.item { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; overflow: hidden; }
+.item-row { width: 100%; display: flex; align-items: center; gap: 12px; padding: 12px; border: 0; background: none; text-align: left; }
+.item-row img { width: 40px; height: 40px; border-radius: 50%; flex: 0 0 auto; }
+.grow { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.ttl { font-size: 15px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.amt { font-size: 16px; font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.item.settle .amt { color: var(--muted); font-weight: 600; }
+.item-actions { display: flex; gap: 8px; padding: 0 12px 12px; }
+.btn { min-height: 44px; padding: 0 16px; border-radius: 12px; border: 1px solid var(--line-strong); background: var(--surface); font-weight: 700; font-size: 14px; }
+.btn.danger { background: var(--neg); border-color: var(--neg); color: var(--surface); }
+.btn.primary { background: var(--primary); border-color: var(--primary); color: var(--on-primary); }
+.settle-row { display: flex; align-items: center; gap: 10px; padding: 10px 12px; background: var(--surface); border: 1px solid var(--line); border-radius: 16px; flex-wrap: wrap; }
+.settle-row img { width: 32px; height: 32px; border-radius: 50%; }
+.settle-row .who { flex: 1 1 140px; min-width: 0; font-size: 14px; }
+.settle-row .who b { font-variant-numeric: tabular-nums; }
+.empty { padding: 22px 18px; border: 1.5px dashed var(--line-strong); border-radius: 16px; text-align: center; color: var(--muted); display: flex; flex-direction: column; gap: 10px; align-items: center; }
+.empty strong { color: var(--ink); font-size: 16px; }
+.pad-bottom { height: 24px; }
+
+/* add */
+.add { padding: 26px var(--gr) 24px var(--gl); display: flex; flex-direction: column; gap: 20px; }
+.add-head { display: flex; align-items: center; justify-content: space-between; }
+.add-head h2 { margin: 0; font-family: var(--font-display); font-size: 30px; font-weight: 800; }
+.field { display: flex; flex-direction: column; gap: 8px; }
+.amount-box { display: flex; align-items: center; gap: 6px; background: var(--surface); border: 1px solid var(--line-strong); border-radius: 18px; padding: 8px 16px; }
+.amount-box span { font-family: var(--font-display); font-size: 32px; font-weight: 800; color: var(--muted); }
+.amount-box input { border: 0; background: transparent; width: 100%; min-width: 0; font-family: var(--font-display); font-size: 38px; font-weight: 800; color: var(--ink); padding: 4px 0; }
+.amount-box input:focus-visible { outline: none; }
+.amount-box:focus-within { outline: 2px solid var(--primary); outline-offset: 2px; }
+.text-in { width: 100%; height: 50px; border: 1px solid var(--line-strong); border-radius: 14px; padding: 0 14px; font: inherit; font-size: 16px; color: var(--ink); background: var(--surface); }
+.text-in::placeholder, .amount-box input::placeholder { color: var(--muted); opacity: 0.8; }
+.payers { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+.payer { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 10px 4px; border-radius: 16px; border: 2px solid transparent; background: var(--surface); min-width: 0; }
+.payer img { width: 46px; height: 46px; border-radius: 50%; }
+.payer span { font-size: 12px; font-weight: 600; max-width: 100%; line-height: 1.2; text-align: center; overflow-wrap: anywhere; }
+.payer[aria-pressed="true"] { border-color: var(--primary); background: var(--primary-soft); }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { display: flex; align-items: center; gap: 8px; height: 44px; padding: 0 14px 0 6px; border-radius: 22px; border: 1px solid var(--line-strong); background: var(--surface); font-size: 14px; font-weight: 600; }
+.chip img { width: 32px; height: 32px; border-radius: 50%; }
+.chip svg { display: none; }
+.chip[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.chip[aria-pressed="true"] svg { display: block; }
+.summary { background: var(--accent-soft); color: var(--on-accent-soft); border-radius: 14px; padding: 14px 16px; font-size: 15px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.save { height: 56px; border: 0; border-radius: 18px; font-size: 17px; font-weight: 700; background: var(--primary); color: var(--on-primary); }
+.save:disabled { background: var(--line); color: var(--muted); cursor: not-allowed; }
+
+/* nav */
+.tabs { flex: 0 0 auto; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); background: var(--surface); border-top: 1px solid var(--line); padding: 0 env(safe-area-inset-right, 0px) 0 env(safe-area-inset-left, 0px); }
+.tab { height: 64px; border: 0; background: none; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; font-size: 12px; font-weight: 700; color: var(--muted); }
+.tab[aria-current="page"] { color: var(--primary); }
+
+/* sheet + toast */
+.scrim { position: absolute; inset: 0; background: rgba(15,23,32,0.45); display: flex; align-items: flex-end; z-index: 20; }
+.sheet { width: 100%; background: var(--bg); border-radius: 24px 24px 0 0; padding: 20px var(--gr) 20px var(--gl); display: flex; flex-direction: column; gap: 14px; max-height: 92%; overflow-y: auto; }
+.sheet h2 { margin: 0; font-family: var(--font-display); font-size: 24px; font-weight: 800; }
+.name-row { display: flex; align-items: center; gap: 10px; }
+.name-row img { width: 40px; height: 40px; border-radius: 50%; flex: 0 0 auto; }
+.toast { position: absolute; left: 50%; bottom: 80px; transform: translateX(-50%); background: var(--ink); color: var(--bg); padding: 10px 16px; border-radius: 12px; font-size: 14px; font-weight: 600; z-index: 30; max-width: calc(100% - 32px); text-align: center; }
+@media (prefers-reduced-motion: no-preference) { .bar > span { transition: width 0.5s ease; } }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="scroll" id="scroll">
+    <section id="view-home">
+      <div class="hero">
+        <svg aria-hidden="true" viewBox="0 0 390 260" preserveAspectRatio="xMidYMin slice">
+          <g transform="translate(0 24)">
+            <circle cx="300" cy="74" r="28" fill="var(--sun)"></circle>
+            <path d="M0 150 L70 92 L120 130 L190 60 L250 120 L310 82 L390 140 V236 H0Z" fill="var(--ridge1)"></path>
+            <path d="M190 60 L172 78 L182 74 L190 82 L198 74 L208 78Z" fill="var(--snow)"></path>
+            <path d="M0 192 L60 142 L110 170 L170 120 L240 180 L300 136 L390 186 V236 H0Z" fill="var(--ridge2)"></path>
+            <path d="M170 120 L156 132 L164 129 L171 136 L178 129 L186 134Z" fill="var(--snow2)"></path>
+            <path d="M0 222 L80 192 L150 210 L230 186 L310 210 L390 196 V236 H0Z" fill="var(--ridge3)"></path>
+          </g>
+          <g transform="translate(318 170) scale(1.2)"><path d="M-5 0 L-4 -12 Q0 -15 4 -12 L5 0Z" fill="#8E2B2B"></path><path d="M-3.8 -11.5 L4.3 -4 L4.6 -1.6 L-4.2 -8.6Z" fill="#F2B23A"></path><circle cx="0" cy="-16.5" r="3.3" fill="#C68B59"></circle></g>
+          <g transform="translate(341 183) scale(1.2)"><path d="M-5 0 L-4 -12 Q0 -15 4 -12 L5 0Z" fill="#8E2B2B"></path><path d="M-3.8 -11.5 L4.3 -4 L4.6 -1.6 L-4.2 -8.6Z" fill="#F2B23A"></path><circle cx="0" cy="-16.5" r="3.3" fill="#B97D4E"></circle></g>
+          <g transform="translate(363 195) scale(1.05)"><path d="M-5 0 L-4 -12 Q0 -15 4 -12 L5 0Z" fill="#8E2B2B"></path><path d="M-3.8 -11.5 L4.3 -4 L4.6 -1.6 L-4.2 -8.6Z" fill="#F2B23A"></path><circle cx="0" cy="-16.5" r="3.3" fill="#D9A06B"></circle></g>
+          <path d="M0 8 Q195 44 390 8" fill="none" stroke="var(--rope)" stroke-width="1.5"></path>
+          <rect x="8" y="11.5" width="24" height="22" fill="#2F6FD6"></rect>
+          <rect x="47" y="17.2" width="24" height="22" fill="#FFFFFF" stroke="#C9D3DE"></rect>
+          <rect x="86" y="21.5" width="24" height="22" fill="#D64545"></rect>
+          <rect x="125" y="24.4" width="24" height="22" fill="#2E9E5B"></rect>
+          <rect x="164" y="25.8" width="24" height="22" fill="#F2C230"></rect>
+          <rect x="203" y="25.8" width="24" height="22" fill="#2F6FD6"></rect>
+          <rect x="242" y="24.4" width="24" height="22" fill="#FFFFFF" stroke="#C9D3DE"></rect>
+          <rect x="281" y="21.5" width="24" height="22" fill="#D64545"></rect>
+          <rect x="320" y="17.2" width="24" height="22" fill="#2E9E5B"></rect>
+          <rect x="359" y="11.5" width="24" height="22" fill="#F2C230"></rect>
+        </svg>
+        <div class="hero-text">
+          <p class="eyebrow">Himachal · 4 friends</p>
+          <h1>Dharamshala<br>Split</h1>
+          <span class="sync" id="sync"><span class="dot" id="syncDot"></span><span id="syncText">Connecting…</span></span>
+        </div>
+        <button type="button" class="icon-btn" data-action="settings" aria-label="Edit names and budget">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"></path><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"></path></svg>
+        </button>
+      </div>
+
+      <div class="card-wrap">
+        <button type="button" class="trip-card" id="tripCard" data-action="reveal" aria-expanded="false"></button>
+      </div>
+
+      <div class="section">
+        <h2>The crew</h2>
+        <div class="crew" id="crew"></div>
+      </div>
+
+      <div class="section" id="settleSection" hidden>
+        <h2>Settle up</h2>
+        <ul class="list" id="settleList"></ul>
+      </div>
+
+      <div class="section">
+        <h2>Recent</h2>
+        <ul class="list" id="log"></ul>
+      </div>
+      <div class="pad-bottom"></div>
+    </section>
+
+    <section id="view-add" hidden>
+      <form class="add" id="addForm" novalidate>
+        <div class="add-head">
+          <h2>Add expense</h2>
+          <svg width="56" height="28" viewBox="0 0 56 28" aria-hidden="true"><path d="M0 28 L18 8 L28 18 L38 4 L56 28Z" fill="var(--ridge1)"></path><path d="M38 4 L33 11 L38 9 L43 11Z" fill="var(--snow)"></path></svg>
+        </div>
+        <div class="field">
+          <label class="label" for="amt">How much?</label>
+          <div class="amount-box"><span aria-hidden="true">₹</span><input id="amt" name="amt" inputmode="decimal" autocomplete="off" placeholder="0"></div>
+        </div>
+        <div class="field">
+          <label class="label" for="note">For what?</label>
+          <input class="text-in" id="note" name="note" maxlength="60" autocomplete="off" placeholder="Dinner, cab, trek…">
+        </div>
+        <div class="field">
+          <span class="label" id="paidLbl">Who paid?</span>
+          <div class="payers" id="payers" role="group" aria-labelledby="paidLbl"></div>
+        </div>
+        <div class="field">
+          <div class="row-between">
+            <span class="label" id="splitLbl">Split between · <span id="splitCount">4</span> of 4</span>
+            <button type="button" class="link" data-action="everyone" style="min-height:44px">Everyone</button>
+          </div>
+          <div class="chips" id="splitters" role="group" aria-labelledby="splitLbl"></div>
+        </div>
+        <div class="summary" id="summary" aria-live="polite"></div>
+        <button type="submit" class="save" id="saveBtn">Save expense</button>
+      </form>
+    </section>
+  </div>
+
+  <nav class="tabs" aria-label="Main">
+    <button type="button" class="tab" data-action="tab" data-tab="home" aria-current="page">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 20l6-10 4 6 2-3 6 7z"></path></svg>
+      <span>Trip</span>
+    </button>
+    <button type="button" class="tab" data-action="tab" data-tab="add">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
+      <span>Add expense</span>
+    </button>
+  </nav>
+
+  <div class="scrim" id="settings" hidden>
+    <form class="sheet" id="settingsForm" role="dialog" aria-modal="true" aria-labelledby="setTitle" novalidate>
+      <h2 id="setTitle">Trip settings</h2>
+      <div id="nameFields" style="display:flex;flex-direction:column;gap:10px"></div>
+      <div class="field">
+        <label class="label" for="budgetIn">Trip budget (₹, whole group)</label>
+        <input class="text-in" id="budgetIn" inputmode="numeric" autocomplete="off" placeholder="e.g. 40000">
+      </div>
+      <div class="row-between" style="justify-content:flex-end">
+        <button type="button" class="btn" data-action="closeSettings">Cancel</button>
+        <button type="submit" class="btn primary">Save</button>
+      </div>
+    </form>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script>
+/* ===== Paste your Supabase project details here (Project Settings → API) ===== */
+const SUPABASE_URL = 'https://lwqfjurveuxwceppwazk.supabase.co';       // e.g. https://abcd1234.supabase.co
+const SUPABASE_ANON_KEY = 'sb_publishable_tMH2TCwNLfZ6wof_tdgeWg_u9HALs2m'; // the "anon" / "publishable" key, never the service_role key
+/* ============================================================================ */
+(function () {
+  const SVGS = [
+    "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 120 120\"><circle cx=\"60\" cy=\"60\" r=\"60\" fill=\"#F28B82\"/><path d=\"M20 120c4-22 20-32 40-32s36 10 40 32z\" fill=\"#1E1E24\"/><path d=\"M50 90h20l-2 30H52z\" fill=\"#F4F4F4\"/><path d=\"M50 90l-6 8 8 22M70 90l6 8-8 22\" fill=\"none\" stroke=\"#3A3A44\" stroke-width=\"2\"/><rect x=\"52\" y=\"77\" width=\"16\" height=\"15\" rx=\"4\" fill=\"#B0754C\"/><circle cx=\"37\" cy=\"60\" r=\"5\" fill=\"#C98B5E\"/><circle cx=\"83\" cy=\"60\" r=\"5\" fill=\"#C98B5E\"/><ellipse cx=\"60\" cy=\"58\" rx=\"23\" ry=\"27\" fill=\"#C98B5E\"/><path d=\"M37 52c-3-19 8-32 24-32 15 0 26 11 22 32-3-10-11-15-23-15s-20 5-23 15z\" fill=\"#16100C\"/><path d=\"M46 30c6-5 19-7 29-2\" stroke=\"#4A3A30\" stroke-width=\"2\" fill=\"none\" stroke-linecap=\"round\"/><path d=\"M31 58C31 22 89 22 89 58\" fill=\"none\" stroke=\"#2B2B33\" stroke-width=\"6\" stroke-linecap=\"round\"/><rect x=\"25\" y=\"50\" width=\"11\" height=\"20\" rx=\"5\" fill=\"#2B2B33\"/><rect x=\"84\" y=\"50\" width=\"11\" height=\"20\" rx=\"5\" fill=\"#2B2B33\"/><rect x=\"27.5\" y=\"54\" width=\"6\" height=\"12\" rx=\"3\" fill=\"#D64545\"/><rect x=\"86.5\" y=\"54\" width=\"6\" height=\"12\" rx=\"3\" fill=\"#D64545\"/><path d=\"M46 52q5-3 10 0M64 52q5-3 10 0\" stroke=\"#16100C\" stroke-width=\"3\" fill=\"none\" stroke-linecap=\"round\"/><circle cx=\"51\" cy=\"59\" r=\"2.8\" fill=\"#1B1B1B\"/><circle cx=\"69\" cy=\"59\" r=\"2.8\" fill=\"#1B1B1B\"/><path d=\"M60 60q-4 6 1 8\" stroke=\"#9C6740\" stroke-width=\"2\" fill=\"none\" stroke-linecap=\"round\"/><path d=\"M51 72q9 8 18 0z\" fill=\"#fff\" stroke=\"#6B3A22\" stroke-width=\"2\" stroke-linejoin=\"round\"/></svg>",
+    "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 120 120\"><circle cx=\"60\" cy=\"60\" r=\"60\" fill=\"#F2C78E\"/><path d=\"M20 120c4-22 20-32 40-32s36 10 40 32z\" fill=\"#4A78B5\"/><path d=\"M50 90h20l-3 30H53z\" fill=\"#8A8F98\"/><path d=\"M50 90l-8 10 9 20M70 90l8 10-9 20\" fill=\"none\" stroke=\"#2F5689\" stroke-width=\"2.5\"/><path d=\"M30 106h14M76 106h14\" stroke=\"#2F5689\" stroke-width=\"2\"/><rect x=\"52\" y=\"76\" width=\"16\" height=\"15\" rx=\"4\" fill=\"#94603D\"/><circle cx=\"36\" cy=\"60\" r=\"5\" fill=\"#A8704A\"/><circle cx=\"84\" cy=\"60\" r=\"5\" fill=\"#A8704A\"/><ellipse cx=\"60\" cy=\"56\" rx=\"24\" ry=\"28\" fill=\"#A8704A\"/><path d=\"M37 50c0-18 10-27 23-27s23 9 23 27c-6-9-14-12-23-12s-17 3-23 12z\" fill=\"#6E4630\" opacity=\".55\"/><ellipse cx=\"52\" cy=\"33\" rx=\"7\" ry=\"3\" fill=\"#fff\" opacity=\".28\"/><path d=\"M36 58c0 22 11 33 24 33s24-11 24-33c-5 8-12 12-24 12s-19-4-24-12z\" fill=\"#2A1E17\"/><path d=\"M49 69q11-6 22 0q-11 3-22 0z\" fill=\"#2A1E17\"/><path d=\"M54 75q6 4 12 0\" stroke=\"#fff\" stroke-width=\"2.5\" fill=\"none\" stroke-linecap=\"round\"/><path d=\"M45 51h10M65 51h10\" stroke=\"#2A1E17\" stroke-width=\"3.2\" stroke-linecap=\"round\"/><circle cx=\"50\" cy=\"58\" r=\"2.8\" fill=\"#1B1B1B\"/><circle cx=\"70\" cy=\"58\" r=\"2.8\" fill=\"#1B1B1B\"/><path d=\"M60 58q-4 7 1 9\" stroke=\"#6E4630\" stroke-width=\"2\" fill=\"none\" stroke-linecap=\"round\"/></svg>",
+    "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 120 120\"><circle cx=\"60\" cy=\"60\" r=\"60\" fill=\"#9BC4E2\"/><g fill=\"#1A1210\"><circle cx=\"34\" cy=\"50\" r=\"13\"/><circle cx=\"86\" cy=\"50\" r=\"13\"/><circle cx=\"30\" cy=\"70\" r=\"12\"/><circle cx=\"90\" cy=\"70\" r=\"12\"/><circle cx=\"34\" cy=\"88\" r=\"11\"/><circle cx=\"86\" cy=\"88\" r=\"11\"/><circle cx=\"45\" cy=\"30\" r=\"13\"/><circle cx=\"60\" cy=\"25\" r=\"14\"/><circle cx=\"75\" cy=\"30\" r=\"13\"/></g><path d=\"M20 120c4-22 20-32 40-32s36 10 40 32z\" fill=\"#D6336C\"/><path d=\"M48 89l12 12 12-12-4-3-8 9-8-9z\" fill=\"#B82457\"/><rect x=\"52\" y=\"76\" width=\"16\" height=\"15\" rx=\"4\" fill=\"#B5784F\"/><ellipse cx=\"60\" cy=\"58\" rx=\"22\" ry=\"26\" fill=\"#C88A5C\"/><g fill=\"#1A1210\"><circle cx=\"44\" cy=\"36\" r=\"8\"/><circle cx=\"56\" cy=\"32\" r=\"8\"/><circle cx=\"68\" cy=\"33\" r=\"8\"/><circle cx=\"78\" cy=\"40\" r=\"7\"/><circle cx=\"39\" cy=\"45\" r=\"6\"/></g><g fill=\"none\" stroke=\"#2B2B33\" stroke-width=\"3\"><rect x=\"40\" y=\"52\" width=\"17\" height=\"13\" rx=\"5\"/><rect x=\"63\" y=\"52\" width=\"17\" height=\"13\" rx=\"5\"/><path d=\"M57 57h6\"/></g><path d=\"M45 59.5q3.5-3 7 0M68 59.5q3.5-3 7 0\" stroke=\"#1B1B1B\" stroke-width=\"2.4\" fill=\"none\" stroke-linecap=\"round\"/><circle cx=\"60\" cy=\"47.5\" r=\"1.8\" fill=\"#7A1A1A\"/><circle cx=\"44\" cy=\"70\" r=\"4\" fill=\"#E0707A\" opacity=\".55\"/><circle cx=\"76\" cy=\"70\" r=\"4\" fill=\"#E0707A\" opacity=\".55\"/><path d=\"M60 62q-3 5 1 7\" stroke=\"#9A6440\" stroke-width=\"2\" fill=\"none\" stroke-linecap=\"round\"/><path d=\"M48 72q12 13 24 0z\" fill=\"#fff\" stroke=\"#7A2E2E\" stroke-width=\"2\" stroke-linejoin=\"round\"/></svg>",
+    "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 120 120\"><defs><clipPath id=\"b\"><path d=\"M20 120c4-22 20-32 40-32s36 10 40 32z\"/></clipPath></defs><circle cx=\"60\" cy=\"60\" r=\"60\" fill=\"#F7D774\"/><g fill=\"#141016\"><circle cx=\"34\" cy=\"48\" r=\"14\"/><circle cx=\"86\" cy=\"48\" r=\"14\"/><circle cx=\"28\" cy=\"70\" r=\"13\"/><circle cx=\"92\" cy=\"70\" r=\"13\"/><circle cx=\"28\" cy=\"92\" r=\"12\"/><circle cx=\"92\" cy=\"92\" r=\"12\"/><circle cx=\"36\" cy=\"106\" r=\"10\"/><circle cx=\"84\" cy=\"106\" r=\"10\"/><circle cx=\"46\" cy=\"28\" r=\"13\"/><circle cx=\"60\" cy=\"24\" r=\"14\"/><circle cx=\"74\" cy=\"28\" r=\"13\"/></g><g clip-path=\"url(#b)\"><rect x=\"0\" y=\"85\" width=\"120\" height=\"40\" fill=\"#2B2733\"/><g fill=\"#F4F0E8\"><rect x=\"0\" y=\"95\" width=\"120\" height=\"3\"/><rect x=\"0\" y=\"104\" width=\"120\" height=\"3\"/><rect x=\"0\" y=\"113\" width=\"120\" height=\"3\"/></g></g><g fill=\"#141016\"><circle cx=\"35\" cy=\"98\" r=\"9\"/><circle cx=\"85\" cy=\"98\" r=\"9\"/></g><rect x=\"52\" y=\"76\" width=\"16\" height=\"15\" rx=\"4\" fill=\"#D29A70\"/><ellipse cx=\"60\" cy=\"58\" rx=\"22\" ry=\"26\" fill=\"#E3B08A\"/><g fill=\"#141016\"><circle cx=\"42\" cy=\"38\" r=\"7\"/><circle cx=\"52\" cy=\"34\" r=\"7\"/><circle cx=\"62\" cy=\"33\" r=\"7\"/><circle cx=\"72\" cy=\"35\" r=\"7\"/><circle cx=\"80\" cy=\"42\" r=\"6\"/><circle cx=\"38\" cy=\"47\" r=\"5\"/></g><g fill=\"#FFFFFF\" fill-opacity=\".3\" stroke=\"#C99A72\" stroke-width=\"2.2\"><circle cx=\"49\" cy=\"60\" r=\"9.5\"/><circle cx=\"71\" cy=\"60\" r=\"9.5\"/></g><path d=\"M58.5 59h3\" stroke=\"#C99A72\" stroke-width=\"2.2\"/><circle cx=\"49\" cy=\"61\" r=\"2.6\" fill=\"#1B1B1B\"/><circle cx=\"71\" cy=\"61\" r=\"2.6\" fill=\"#1B1B1B\"/><circle cx=\"60\" cy=\"49.5\" r=\"1.7\" fill=\"#1B1B1B\"/><circle cx=\"44\" cy=\"72\" r=\"3.8\" fill=\"#E88A7E\" opacity=\".5\"/><circle cx=\"76\" cy=\"72\" r=\"3.8\" fill=\"#E88A7E\" opacity=\".5\"/><path d=\"M60 64q-3 5 1 7\" stroke=\"#B7835E\" stroke-width=\"2\" fill=\"none\" stroke-linecap=\"round\"/><path d=\"M53 75q7 4 14-1\" stroke=\"#9A4A3A\" stroke-width=\"2.6\" fill=\"none\" stroke-linecap=\"round\"/></svg>"
+  ];
+  const AV = SVGS.map((s) => 'data:image/svg+xml,' + encodeURIComponent(s));
+  const DEFAULT_NAMES = ['Schoolboy', 'Bathroom guy', 'Andekha', 'Gridgossip'];
+  const ALL = [0, 1, 2, 3];
+
+  const state = {
+    names: DEFAULT_NAMES.slice(), budget: 0, expenses: [],
+    tab: 'home', reveal: false, payer: 0, split: [true, true, true, true],
+    openRow: null, confirmSettle: null, mode: 'connecting'
+  };
+  let db = null;
+
+  const $ = (id) => document.getElementById(id);
+  const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const fmt = (n) => '₹' + Math.round(n).toLocaleString('en-IN');
+  const nm = (i) => esc(state.names[i] || DEFAULT_NAMES[i]);
+  const parseAmt = (v) => { const n = parseFloat(String(v).replace(/[,\s₹]/g, '')); return isFinite(n) && n > 0 ? Math.round(n * 100) / 100 : 0; };
+
+  /* ---------- data from the store is untrusted: clean it ---------- */
+  function cleanExpense(id, d) {
+    if (!d || typeof d !== 'object') return null;
+    const amount = Number(d.amount), payer = Number(d.payer);
+    if (!(amount > 0) || !ALL.includes(payer) || !Array.isArray(d.split)) return null;
+    const split = ALL.map((i) => d.split[i] === true);
+    if (!split.some(Boolean)) return null;
+    return { id: String(id), amount, payer, split, note: String(d.note || 'Expense').slice(0, 60), kind: d.kind === 'settle' ? 'settle' : 'expense', createdAt: Number(d.createdAt) || 0 };
+  }
+  function cleanSettings(d) {
+    if (!d || typeof d !== 'object') return;
+    if (Array.isArray(d.names)) state.names = ALL.map((i) => (typeof d.names[i] === 'string' && d.names[i].trim()) ? d.names[i].trim().slice(0, 20) : DEFAULT_NAMES[i]);
+    const b = Number(d.budget); state.budget = b > 0 ? b : 0;
+  }
+
+  /* ---------- local fallback ---------- */
+  const LS = 'dharamshala-split-v1';
+  function loadLocal() {
+    try { const d = JSON.parse(localStorage.getItem(LS) || 'null'); if (d) { cleanSettings(d); state.expenses = (d.expenses || []).map((e) => cleanExpense(e.id, e)).filter(Boolean); } } catch (e) {}
+  }
+  function saveLocal() {
+    try { localStorage.setItem(LS, JSON.stringify({ names: state.names, budget: state.budget, expenses: state.expenses })); } catch (e) {}
+  }
+
+  /* ---------- math ---------- */
+  function compute() {
+    const bal = [0, 0, 0, 0]; let spent = 0;
+    for (const e of state.expenses) {
+      const ids = ALL.filter((i) => e.split[i]);
+      if (e.kind !== 'settle') spent += e.amount;
+      bal[e.payer] += e.amount;
+      ids.forEach((i) => { bal[i] -= e.amount / ids.length; });
+    }
+    // who pays whom, fewest payments
+    const cred = [], debt = [];
+    bal.forEach((b, i) => { if (b > 0.5) cred.push({ i, v: b }); else if (b < -0.5) debt.push({ i, v: -b }); });
+    cred.sort((a, b) => b.v - a.v); debt.sort((a, b) => b.v - a.v);
+    const moves = []; let ci = 0, di = 0;
+    while (ci < cred.length && di < debt.length) {
+      const v = Math.min(cred[ci].v, debt[di].v);
+      if (Math.round(v) >= 1) moves.push({ from: debt[di].i, to: cred[ci].i, amount: Math.round(v) });
+      cred[ci].v -= v; debt[di].v -= v;
+      if (cred[ci].v < 0.5) ci++;
+      if (debt[di].v < 0.5) di++;
+    }
+    return { bal, spent, moves };
+  }
+
+  /* ---------- render ---------- */
+  function renderSync() {
+    const live = state.mode === 'live';
+    $('syncDot').className = 'dot' + (live ? ' live' : '');
+    $('syncText').textContent = live ? 'Synced with the group' : state.mode === 'local' ? 'Saved on this phone only' : 'Connecting…';
+  }
+
+  function renderHome() {
+    const { bal, spent, moves } = compute();
+    const card = $('tripCard');
+    card.setAttribute('aria-expanded', state.reveal ? 'true' : 'false');
+    if (state.reveal) {
+      const b = state.budget;
+      const pct = b > 0 ? Math.min(100, Math.round(spent / b * 100)) : 0;
+      const left = b - spent;
+      card.innerHTML =
+        '<span class="row-between"><span class="label">Trip total spent</span><span class="small">Tap to hide</span></span>' +
+        '<span class="big">' + fmt(spent) + '</span>' +
+        (b > 0
+          ? '<span class="bar' + (left < 0 ? ' over' : '') + '"><span style="width:' + pct + '%"></span></span>' +
+            '<span class="row-between small"><span>Budget ' + fmt(b) + ' · ' + pct + '%</span><span class="' + (left < 0 ? 'neg' : '') + '">' + (left >= 0 ? fmt(left) + ' left' : fmt(-left) + ' over') + '</span></span>'
+          : '<span class="small">No budget set yet. Use the pencil button up top to add one.</span>') +
+        '<span class="small">About ' + fmt(spent / 4) + ' per person</span>';
+    } else {
+      card.innerHTML =
+        '<span class="peek"><span class="peek-ico"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"></path><circle cx="12" cy="12" r="3"></circle></svg></span>' +
+        '<span style="display:flex;flex-direction:column;gap:2px"><span style="font-size:16px;font-weight:700">Trip total</span><span class="small">Tap to see the budget and spend</span></span></span>';
+    }
+
+    $('crew').innerHTML = ALL.map((i) => {
+      const b = bal[i]; const settled = Math.abs(b) < 1;
+      const cls = settled ? 'mute' : b > 0 ? 'pos' : 'neg';
+      const txt = settled ? 'Settled' : b > 0 ? 'Gets ' + fmt(b) : 'Owes ' + fmt(-b);
+      return '<div class="member"><img src="' + AV[i] + '" alt=""><span class="name">' + nm(i) + '</span><span class="status ' + cls + '">' + txt + '</span></div>';
+    }).join('');
+
+    $('settleSection').hidden = moves.length === 0;
+    $('settleList').innerHTML = moves.map((m) => {
+      const key = m.from + '-' + m.to + '-' + m.amount;
+      const confirming = state.confirmSettle === key;
+      return '<li class="settle-row"><img src="' + AV[m.from] + '" alt=""><span class="who"><strong>' + nm(m.from) + '</strong> pays <strong>' + nm(m.to) + '</strong> <b>' + fmt(m.amount) + '</b></span>' +
+        (confirming
+          ? '<button type="button" class="btn" data-action="cancelSettle">Cancel</button><button type="button" class="btn primary" data-action="doSettle" data-from="' + m.from + '" data-to="' + m.to + '" data-amount="' + m.amount + '">Confirm paid</button>'
+          : '<button type="button" class="btn" data-action="askSettle" data-key="' + key + '">Mark paid</button>') +
+        '</li>';
+    }).join('');
+
+    const log = $('log');
+    if (!state.expenses.length) {
+      log.innerHTML = '<li class="empty"><strong>No expenses yet</strong><span>Paid for a cab, momos or a trek? Add it and everyone’s share is worked out for you.</span><button type="button" class="btn primary" data-action="tab" data-tab="add">Add the first expense</button></li>';
+    } else {
+      log.innerHTML = state.expenses.map((e) => {
+        const n = e.split.filter(Boolean).length;
+        const open = state.openRow === e.id;
+        const date = e.createdAt ? new Date(e.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' }) + ' · ' : '';
+        const meta = e.kind === 'settle'
+          ? date + 'Settlement'
+          : date + nm(e.payer) + ' paid · ' + (n === 4 ? 'split 4 ways' : n === 1 ? 'for ' + nm(e.split.indexOf(true)) : 'split ' + n + ' ways');
+        return '<li class="item' + (e.kind === 'settle' ? ' settle' : '') + '">' +
+          '<button type="button" class="item-row" data-action="row" data-id="' + esc(e.id) + '" aria-expanded="' + open + '">' +
+          '<img src="' + AV[e.payer] + '" alt=""><span class="grow"><span class="ttl">' + esc(e.note) + '</span><span class="small">' + meta + '</span></span>' +
+          '<span class="amt">' + fmt(e.amount) + '</span></button>' +
+          (open ? '<div class="item-actions"><button type="button" class="btn" data-action="row" data-id="' + esc(e.id) + '">Keep</button><button type="button" class="btn danger" data-action="delete" data-id="' + esc(e.id) + '">Delete</button></div>' : '') +
+          '</li>';
+      }).join('');
+    }
+  }
+
+  function renderAdd() {
+    $('payers').innerHTML = ALL.map((i) =>
+      '<button type="button" class="payer" data-action="payer" data-i="' + i + '" aria-pressed="' + (state.payer === i) + '"><img src="' + AV[i] + '" alt=""><span>' + nm(i) + '</span></button>').join('');
+    $('splitters').innerHTML = ALL.map((i) =>
+      '<button type="button" class="chip" data-action="split" data-i="' + i + '" aria-pressed="' + state.split[i] + '"><img src="' + AV[i] + '" alt=""><span>' + nm(i) + '</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"></path></svg></button>').join('');
+    renderSummary();
+  }
+  function renderSummary() {
+    const amt = parseAmt($('amt').value);
+    const n = state.split.filter(Boolean).length;
+    $('splitCount').textContent = n;
+    $('summary').textContent = n === 0 ? 'Pick at least one person' : amt > 0 ? 'Split ' + n + (n === 1 ? ' way' : ' ways') + ' · ' + fmt(amt / n) + ' each' : 'Split ' + n + (n === 1 ? ' way' : ' ways') + ' · enter an amount';
+    $('saveBtn').disabled = !(amt > 0 && n > 0);
+  }
+
+  function renderTabs() {
+    $('view-home').hidden = state.tab !== 'home';
+    $('view-add').hidden = state.tab !== 'add';
+    document.querySelectorAll('.tab').forEach((t) => {
+      if (t.dataset.tab === state.tab) t.setAttribute('aria-current', 'page'); else t.removeAttribute('aria-current');
+    });
+  }
+
+  function render() { renderSync(); renderTabs(); renderHome(); renderAdd(); }
+
+  let toastTimer;
+  function toast(msg) {
+    const t = $('toast'); t.textContent = msg; t.hidden = false;
+    clearTimeout(toastTimer); toastTimer = setTimeout(() => { t.hidden = true; }, 2600);
+  }
+
+  /* ---------- writes ---------- */
+  let sb = null;
+  async function refresh() {
+    const [ex, st] = await Promise.all([
+      sb.from('ds_expenses').select('*').order('created_at', { ascending: false }).limit(1000),
+      sb.from('ds_settings').select('*').eq('id', 1).maybeSingle()
+    ]);
+    if (ex.error) throw ex.error;
+    if (st.error) throw st.error;
+    state.expenses = (ex.data || []).map((r) => cleanExpense(r.id, Object.assign({}, r, { createdAt: Date.parse(r.created_at) }))).filter(Boolean);
+    if (st.data) cleanSettings(st.data);
+    renderHome(); renderAdd();
+  }
+  const quiet = () => refresh().catch(() => {});
+  async function addExpense(e) {
+    if (sb) {
+      const { error } = await sb.from('ds_expenses').insert({ kind: e.kind, note: e.note, amount: e.amount, payer: e.payer, split: e.split });
+      if (error) { toast('Couldn\u2019t save. Check your connection and try again.'); return false; }
+      await quiet();
+    } else {
+      state.expenses.unshift(cleanExpense('l' + Date.now(), e)); saveLocal(); renderHome();
+    }
+    return true;
+  }
+  async function deleteExpense(id) {
+    if (sb) {
+      const { error } = await sb.from('ds_expenses').delete().eq('id', id);
+      if (error) { toast('Couldn\u2019t delete. Try again.'); return; }
+      await quiet();
+    } else {
+      state.expenses = state.expenses.filter((e) => e.id !== id); saveLocal(); renderHome();
+    }
+  }
+  async function saveSettings(names, budget) {
+    state.names = names; state.budget = budget; render();
+    if (sb) {
+      const { error } = await sb.from('ds_settings').update({ names, budget }).eq('id', 1);
+      if (error) toast('Couldn\u2019t save settings. Try again.');
+      await quiet();
+    } else saveLocal();
+  }
+
+  /* ---------- events ---------- */
+  document.addEventListener('click', async (ev) => {
+    const el = ev.target.closest('[data-action]'); if (!el) return;
+    const a = el.dataset.action;
+    if (a === 'tab') { state.tab = el.dataset.tab; state.openRow = null; renderTabs(); $('scroll').scrollTop = 0; if (state.tab === 'add') setTimeout(() => $('amt').focus(), 50); }
+    else if (a === 'reveal') { state.reveal = !state.reveal; renderHome(); }
+    else if (a === 'payer') { state.payer = Number(el.dataset.i); renderAdd(); }
+    else if (a === 'split') { const i = Number(el.dataset.i); state.split[i] = !state.split[i]; renderAdd(); }
+    else if (a === 'everyone') { state.split = [true, true, true, true]; renderAdd(); }
+    else if (a === 'row') { state.openRow = state.openRow === el.dataset.id ? null : el.dataset.id; renderHome(); }
+    else if (a === 'delete') { const id = el.dataset.id; state.openRow = null; await deleteExpense(id); toast('Deleted'); }
+    else if (a === 'askSettle') { state.confirmSettle = el.dataset.key; renderHome(); }
+    else if (a === 'cancelSettle') { state.confirmSettle = null; renderHome(); }
+    else if (a === 'doSettle') {
+      const from = Number(el.dataset.from), to = Number(el.dataset.to), amount = Number(el.dataset.amount);
+      state.confirmSettle = null;
+      const split = ALL.map((i) => i === to);
+      const ok = await addExpense({ kind: 'settle', note: (state.names[from] || '') + ' paid ' + (state.names[to] || ''), amount, payer: from, split, createdAt: Date.now() });
+      if (ok) toast('Marked as paid'); renderHome();
+    }
+    else if (a === 'settings') { openSettings(); }
+    else if (a === 'closeSettings') { $('settings').hidden = true; }
+  });
+  $('settings').addEventListener('click', (ev) => { if (ev.target.id === 'settings') $('settings').hidden = true; });
+  document.addEventListener('keydown', (ev) => { if (ev.key === 'Escape' && !$('settings').hidden) $('settings').hidden = true; });
+
+  $('amt').addEventListener('input', renderSummary);
+  $('addForm').addEventListener('submit', async (ev) => {
+    ev.preventDefault();
+    const amount = parseAmt($('amt').value);
+    if (!(amount > 0) || !state.split.some(Boolean)) return;
+    const e = { kind: 'expense', note: $('note').value.trim().slice(0, 60) || 'Expense', amount, payer: state.payer, split: state.split.slice(), createdAt: Date.now() };
+    $('saveBtn').disabled = true;
+    const ok = await addExpense(e);
+    if (!ok) { renderSummary(); return; }
+    $('amt').value = ''; $('note').value = ''; state.split = [true, true, true, true];
+    state.tab = 'home'; state.reveal = true; render(); $('scroll').scrollTop = 0;
+    toast('Saved ' + fmt(amount));
+  });
+
+  function openSettings() {
+    $('nameFields').innerHTML = ALL.map((i) =>
+      '<div class="name-row"><img src="' + AV[i] + '" alt=""><label class="label" for="name' + i + '" style="position:absolute;left:-9999px">Name ' + (i + 1) + '</label><input class="text-in" id="name' + i + '" maxlength="20" autocomplete="off" value="' + nm(i) + '"></div>').join('');
+    $('budgetIn').value = state.budget > 0 ? String(state.budget) : '';
+    $('settings').hidden = false;
+    setTimeout(() => $('name0').focus(), 30);
+  }
+  $('settingsForm').addEventListener('submit', (ev) => {
+    ev.preventDefault();
+    const names = ALL.map((i) => ($('name' + i).value || '').trim().slice(0, 20) || DEFAULT_NAMES[i]);
+    const b = parseAmt($('budgetIn').value);
+    $('settings').hidden = true;
+    saveSettings(names, Math.round(b));
+    toast('Settings saved');
+  });
+
+  /* ---------- connect ---------- */
+  render();
+  (async () => {
+    const configured = /^https:\/\/[a-z0-9-]+\.supabase\.co\/?$/i.test(SUPABASE_URL) && SUPABASE_ANON_KEY.length > 20 && window.supabase;
+    if (!configured) { state.mode = 'local'; loadLocal(); render(); return; }
+    sb = window.supabase.createClient(SUPABASE_URL.replace(/\/$/, ''), SUPABASE_ANON_KEY, { auth: { persistSession: false } });
+    try { await refresh(); state.mode = 'live'; renderSync(); }
+    catch (err) {
+      sb = null; state.mode = 'local'; loadLocal(); render();
+      toast('Couldn\u2019t reach the trip log. Saving on this phone for now.');
+      return;
+    }
+    let timer;
+    const soon = () => { clearTimeout(timer); timer = setTimeout(quiet, 150); };
+    sb.channel('ds-live')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'ds_expenses' }, soon)
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'ds_settings' }, soon)
+      .subscribe();
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) quiet(); });
+  })();
+})();
+</script>
+</body>
+</html>
