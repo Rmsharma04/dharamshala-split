@@ -326,7 +326,7 @@ h1, h2 { text-wrap: balance; }
         <div class="stat"><span class="label">Paid</span><b id="pPaid"></b></div>
         <div class="stat"><span class="label">Their share</span><b id="pShare"></b></div>
       </div>
-      <h3 class="label" style="margin:0">Spends</h3>
+      <h3 class="label" style="margin:0">Paid for</h3>
       <ul class="list" id="personList"></ul>
       <div class="field" id="personPayWrap" hidden>
         <h3 class="label" style="margin:0">Settlements</h3>
@@ -522,15 +522,17 @@ const SUPABASE_ANON_KEY = 'sb_publishable_tMH2TCwNLfZ6wof_tdgeWg_u9HALs2m'; // t
       const n = e.split.filter(Boolean).length;
       const mine = e.split[i] ? e.amount / n : 0;
       if (e.payer !== i && !mine) continue;
-      if (e.payer === i) paid += e.amount;
       share += mine;
-      const meta = (date ? date + ' · ' : '') + (e.payer === i ? 'Paid ' + fmt(e.amount) : nm(e.payer) + ' paid ' + fmt(e.amount)) + ' · ' + (n === 4 ? 'split 4 ways' : 'split ' + n + (n === 1 ? ' way' : ' ways'));
-      rows.push('<li class="item' + (e.pending ? ' pending' : '') + '"><div class="item-row"><img src="' + AV[e.payer] + '" alt=""><span class="grow"><span class="ttl">' + esc(e.note) + (e.payer === i ? '<span class="tag">You paid</span>' : '') + '</span><span class="small">' + meta + '</span></span>' +
-        '<span class="share">' + (mine ? '<span class="amt">' + fmt(mine) + '</span><span class="small">share</span>' : '<span class="small">Not in split</span>') + '</span></div></li>');
+      if (e.payer !== i) continue;
+      paid += e.amount;
+      const forWho = n === 4 ? 'for everyone' : n === 1 ? 'for ' + nm(e.split.indexOf(true)) : 'split ' + n + ' ways';
+      const meta = (date ? date + ' · ' : '') + forWho + (mine ? ' · own share ' + fmt(mine) : '');
+      rows.push('<li class="item' + (e.pending ? ' pending' : '') + '"><div class="item-row"><img src="' + AV[i] + '" alt=""><span class="grow"><span class="ttl">' + esc(e.note) + '</span><span class="small">' + meta + '</span></span>' +
+        '<span class="amt">' + fmt(e.amount) + '</span></div></li>');
     }
     $('pPaid').textContent = fmt(paid);
     $('pShare').textContent = fmt(share);
-    setHTML($('personList'), rows.length ? rows.join('') : '<li class="empty"><span>No spends for ' + nm(i) + ' yet.</span></li>');
+    setHTML($('personList'), rows.length ? rows.join('') : '<li class="empty"><span>' + nm(i) + ' hasn\u2019t paid for anything yet.</span></li>');
     $('personPayWrap').hidden = pays.length === 0;
     setHTML($('personPays'), pays.join(''));
   }
