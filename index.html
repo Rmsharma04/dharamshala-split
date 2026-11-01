@@ -91,6 +91,8 @@ h1, h2 { text-wrap: balance; }
 .section { padding: 22px var(--gr) 4px var(--gl); display: flex; flex-direction: column; gap: 10px; }
 .section h2 { margin: 0; font-size: 15px; font-weight: 700; }
 .crew { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+.member { border: 0; background: none; padding: 6px 2px; border-radius: 14px; color: inherit; cursor: pointer; }
+.member:active { background: var(--primary-soft); }
 .member { display: flex; flex-direction: column; align-items: center; gap: 4px; text-align: center; min-width: 0; }
 .member img { width: 58px; height: 58px; border-radius: 50%; border: 3px solid var(--surface); box-shadow: 0 2px 6px var(--shadow); }
 .member .name { font-size: 13px; font-weight: 600; max-width: 100%; line-height: 1.2; overflow-wrap: anywhere; }
@@ -158,6 +160,15 @@ h1, h2 { text-wrap: balance; }
 .sheet h2 { margin: 0; font-family: var(--font-display); font-size: 24px; font-weight: 800; }
 .name-row { display: flex; align-items: center; gap: 10px; }
 .name-row img { width: 40px; height: 40px; border-radius: 50%; flex: 0 0 auto; }
+.person-head { display: flex; align-items: center; gap: 12px; }
+.person-head img { width: 56px; height: 56px; border-radius: 50%; flex: 0 0 auto; }
+.person-head h2 { margin: 0; }
+.close-btn { margin-left: auto; width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--line); background: var(--surface); display: grid; place-items: center; flex: 0 0 auto; }
+.stats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.stat { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px; display: flex; flex-direction: column; gap: 2px; }
+.stat b { font-family: var(--font-display); font-size: 24px; font-weight: 800; font-variant-numeric: tabular-nums; }
+.tag { display: inline-block; font-size: 11px; font-weight: 700; padding: 1px 7px; border-radius: 999px; background: var(--primary-soft); color: var(--primary); margin-left: 6px; vertical-align: 1px; }
+.share { display: flex; flex-direction: column; align-items: flex-end; gap: 0; }
 .toast { position: absolute; left: 50%; bottom: 80px; transform: translateX(-50%); background: var(--ink); color: var(--bg); padding: 10px 16px; border-radius: 12px; font-size: 14px; font-weight: 600; z-index: 30; max-width: calc(100% - 32px); text-align: center; }
 @media (prefers-reduced-motion: no-preference) { .bar > span { transition: width 0.5s ease; } }
 </style>
@@ -299,6 +310,31 @@ h1, h2 { text-wrap: balance; }
     </form>
   </div>
 
+  <div class="scrim" id="person" hidden>
+    <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="personName">
+      <div class="person-head">
+        <img id="personImg" alt="">
+        <div style="display:flex;flex-direction:column;gap:2px;min-width:0">
+          <h2 id="personName"></h2>
+          <span class="status" id="personBal" style="font-size:14px"></span>
+        </div>
+        <button type="button" class="close-btn" data-action="closePerson" aria-label="Close">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg>
+        </button>
+      </div>
+      <div class="stats">
+        <div class="stat"><span class="label">Paid</span><b id="pPaid"></b></div>
+        <div class="stat"><span class="label">Their share</span><b id="pShare"></b></div>
+      </div>
+      <h3 class="label" style="margin:0">Spends</h3>
+      <ul class="list" id="personList"></ul>
+      <div class="field" id="personPayWrap" hidden>
+        <h3 class="label" style="margin:0">Settlements</h3>
+        <ul class="list" id="personPays"></ul>
+      </div>
+    </div>
+  </div>
+
   <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 </div>
 
@@ -322,7 +358,7 @@ const SUPABASE_ANON_KEY = 'sb_publishable_tMH2TCwNLfZ6wof_tdgeWg_u9HALs2m'; // t
   const state = {
     names: DEFAULT_NAMES.slice(), budget: 0, expenses: [],
     tab: 'home', reveal: false, payer: 0, split: [true, true, true, true],
-    openRow: null, confirmSettle: null, mode: 'connecting'
+    openRow: null, confirmSettle: null, person: null, mode: 'connecting'
   };
   let db = null;
 
@@ -430,7 +466,7 @@ const SUPABASE_ANON_KEY = 'sb_publishable_tMH2TCwNLfZ6wof_tdgeWg_u9HALs2m'; // t
       const b = bal[i]; const settled = Math.abs(b) < 1;
       const cls = settled ? 'mute' : b > 0 ? 'pos' : 'neg';
       const txt = settled ? 'Settled' : b > 0 ? 'Gets ' + fmt(b) : 'Owes ' + fmt(-b);
-      return '<div class="member"><img src="' + AV[i] + '" alt=""><span class="name">' + nm(i) + '</span><span class="status ' + cls + '">' + txt + '</span></div>';
+      return '<button type="button" class="member" data-action="person" data-i="' + i + '" aria-label="See ' + nm(i) + '\u2019s spends"><img src="' + AV[i] + '" alt=""><span class="name">' + nm(i) + '</span><span class="status ' + cls + '">' + txt + '</span></button>';
     }).join(''));
 
     const list = state.expenses.filter((e) => e.kind !== 'settle');
@@ -464,7 +500,48 @@ const SUPABASE_ANON_KEY = 'sb_publishable_tMH2TCwNLfZ6wof_tdgeWg_u9HALs2m'; // t
     setHTML($('settleHistory'), paid.map(itemHTML).join(''));
   }
 
-  function renderLists() { const c = compute(); renderHome(c); renderSettle(c); }
+  function renderPerson(c) {
+    const i = state.person;
+    if (i == null) return;
+    const { bal } = c || compute();
+    $('personImg').src = AV[i];
+    $('personName').textContent = state.names[i] || DEFAULT_NAMES[i];
+    const b = bal[i]; const settled = Math.abs(b) < 1;
+    $('personBal').className = 'status ' + (settled ? 'mute' : b > 0 ? 'pos' : 'neg');
+    $('personBal').textContent = settled ? 'All settled' : b > 0 ? 'Gets back ' + fmt(b) : 'Owes ' + fmt(-b);
+    let paid = 0, share = 0;
+    const rows = [], pays = [];
+    for (const e of state.expenses) {
+      const date = e.createdAt ? new Date(e.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' }) : '';
+      if (e.kind === 'settle') {
+        const to = e.split.indexOf(true);
+        if (e.payer === i) pays.push('<li class="settle-row"><img src="' + AV[to] + '" alt=""><span class="who">Paid <strong>' + nm(to) + '</strong><br><span class="small">' + date + '</span></span><span class="amt">' + fmt(e.amount) + '</span></li>');
+        else if (to === i) pays.push('<li class="settle-row"><img src="' + AV[e.payer] + '" alt=""><span class="who">Got from <strong>' + nm(e.payer) + '</strong><br><span class="small">' + date + '</span></span><span class="amt pos">' + fmt(e.amount) + '</span></li>');
+        continue;
+      }
+      const n = e.split.filter(Boolean).length;
+      const mine = e.split[i] ? e.amount / n : 0;
+      if (e.payer !== i && !mine) continue;
+      if (e.payer === i) paid += e.amount;
+      share += mine;
+      const meta = (date ? date + ' · ' : '') + (e.payer === i ? 'Paid ' + fmt(e.amount) : nm(e.payer) + ' paid ' + fmt(e.amount)) + ' · ' + (n === 4 ? 'split 4 ways' : 'split ' + n + (n === 1 ? ' way' : ' ways'));
+      rows.push('<li class="item' + (e.pending ? ' pending' : '') + '"><div class="item-row"><img src="' + AV[e.payer] + '" alt=""><span class="grow"><span class="ttl">' + esc(e.note) + (e.payer === i ? '<span class="tag">You paid</span>' : '') + '</span><span class="small">' + meta + '</span></span>' +
+        '<span class="share">' + (mine ? '<span class="amt">' + fmt(mine) + '</span><span class="small">share</span>' : '<span class="small">Not in split</span>') + '</span></div></li>');
+    }
+    $('pPaid').textContent = fmt(paid);
+    $('pShare').textContent = fmt(share);
+    setHTML($('personList'), rows.length ? rows.join('') : '<li class="empty"><span>No spends for ' + nm(i) + ' yet.</span></li>');
+    $('personPayWrap').hidden = pays.length === 0;
+    setHTML($('personPays'), pays.join(''));
+  }
+  function openPerson(i) {
+    state.person = i; renderPerson(); $('person').hidden = false;
+    const sh = $('person').querySelector('.sheet'); sh.scrollTop = 0;
+    setTimeout(() => $('person').querySelector('.close-btn').focus(), 30);
+  }
+  function closePerson() { state.person = null; $('person').hidden = true; }
+
+  function renderLists() { const c = compute(); renderHome(c); renderSettle(c); renderPerson(c); }
 
   function renderAdd() {
     setHTML($('payers'), ALL.map((i) =>
@@ -580,11 +657,14 @@ const SUPABASE_ANON_KEY = 'sb_publishable_tMH2TCwNLfZ6wof_tdgeWg_u9HALs2m'; // t
       const ok = await addExpense({ kind: 'settle', note: 'Settlement', amount, payer: from, split, createdAt: Date.now() });
       if (!ok) toast('Couldn’t save the payment. Check your connection and try again.');
     }
+    else if (a === 'person') { openPerson(Number(el.dataset.i)); }
+    else if (a === 'closePerson') { closePerson(); }
     else if (a === 'settings') { openSettings(); }
     else if (a === 'closeSettings') { $('settings').hidden = true; }
   });
   $('settings').addEventListener('click', (ev) => { if (ev.target.id === 'settings') $('settings').hidden = true; });
-  document.addEventListener('keydown', (ev) => { if (ev.key === 'Escape' && !$('settings').hidden) $('settings').hidden = true; });
+  $('person').addEventListener('click', (ev) => { if (ev.target.id === 'person') closePerson(); });
+  document.addEventListener('keydown', (ev) => { if (ev.key !== 'Escape') return; if (!$('settings').hidden) $('settings').hidden = true; if (!$('person').hidden) closePerson(); });
 
   $('amt').addEventListener('input', renderSummary);
   $('addForm').addEventListener('submit', async (ev) => {
