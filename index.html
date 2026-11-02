@@ -134,7 +134,7 @@ h1, h2 { text-wrap: balance; }
 .payers { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
 .payer { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 10px 4px; border-radius: 16px; border: 2px solid transparent; background: var(--surface); min-width: 0; }
 .payer img { width: 46px; height: 46px; border-radius: 50%; }
-.payer span { font-size: 12px; font-weight: 600; max-width: 100%; line-height: 1.2; text-align: center; overflow-wrap: anywhere; }
+.payer span { font-size: 12px; font-weight: 600; max-width: 100%; line-height: 1.2; text-align: center; overflow-wrap: break-word; }
 .payer[aria-pressed="true"] { border-color: var(--primary); background: var(--primary-soft); }
 .chips { display: flex; flex-wrap: wrap; gap: 8px; }
 .chip { display: flex; align-items: center; gap: 8px; height: 44px; padding: 0 14px 0 6px; border-radius: 22px; border: 1px solid var(--line-strong); background: var(--surface); font-size: 14px; font-weight: 600; }
@@ -169,6 +169,19 @@ h1, h2 { text-wrap: balance; }
 .stat b { font-family: var(--font-display); font-size: 24px; font-weight: 800; font-variant-numeric: tabular-nums; }
 .tag { display: inline-block; font-size: 11px; font-weight: 700; padding: 1px 7px; border-radius: 999px; background: var(--primary-soft); color: var(--primary); margin-left: 6px; vertical-align: 1px; }
 .share { display: flex; flex-direction: column; align-items: flex-end; gap: 0; }
+.row-actions { display: flex; gap: 8px; width: 100%; justify-content: flex-end; }
+.pay-card { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+.pay-card h3 { margin: 0; font-size: 16px; font-weight: 700; color: var(--ink); }
+.pay-card { padding: 14px 12px; }
+.pay-card .payers { gap: 6px; }
+.pay-card .payer { background: var(--bg); padding: 8px 2px; }
+.pay-card .payer img { width: 40px; height: 40px; }
+.pay-card .payer span { font-size: 11px; letter-spacing: -0.01em; }
+.pay-card .payer[aria-pressed="true"] { background: var(--primary-soft); }
+.payer:disabled { opacity: 0.35; cursor: not-allowed; }
+.pay-card .amount-box { padding: 4px 14px; }
+.pay-card .amount-box span { font-size: 26px; }
+.pay-card .amount-box input { font-size: 30px; }
 .toast { position: absolute; left: 50%; bottom: 80px; transform: translateX(-50%); background: var(--ink); color: var(--bg); padding: 10px 16px; border-radius: 12px; font-size: 14px; font-weight: 600; z-index: 30; max-width: calc(100% - 32px); text-align: center; }
 @media (prefers-reduced-motion: no-preference) { .bar > span { transition: width 0.5s ease; } }
 </style>
@@ -272,6 +285,22 @@ h1, h2 { text-wrap: balance; }
           <h3 class="label" style="margin:0">Payments to make</h3>
           <ul class="list" id="settleList"></ul>
         </div>
+        <form class="pay-card" id="payForm" novalidate>
+          <h3>Record a payment</h3>
+          <span class="small" style="margin-top:-6px">Paid someone back, all of it or just part? Log it here.</span>
+          <div class="field">
+            <span class="label" id="payFromLbl">Who paid</span>
+            <div class="payers" id="payFrom" role="group" aria-labelledby="payFromLbl"></div>
+          </div>
+          <div class="field">
+            <span class="label" id="payToLbl">Paid to</span>
+            <div class="payers" id="payTo" role="group" aria-labelledby="payToLbl"></div>
+          </div>
+          <div class="amount-box"><span aria-hidden="true">₹</span><input id="payAmt" name="payAmt" inputmode="decimal" autocomplete="off" placeholder="0" aria-label="Amount paid"></div>
+          <input class="text-in" id="payNote" name="payNote" maxlength="60" autocomplete="off" placeholder="Note (optional), e.g. UPI" aria-label="Note">
+          <div class="summary" id="payHint" aria-live="polite"></div>
+          <button type="submit" class="save" id="payBtn">Record payment</button>
+        </form>
         <div class="field" id="historyWrap" hidden>
           <h3 class="label" style="margin:0">Already paid</h3>
           <ul class="list" id="settleHistory"></ul>
@@ -358,7 +387,7 @@ const SUPABASE_ANON_KEY = 'sb_publishable_tMH2TCwNLfZ6wof_tdgeWg_u9HALs2m'; // t
   const state = {
     names: DEFAULT_NAMES.slice(), budget: 0, expenses: [],
     tab: 'home', reveal: false, payer: 0, split: [true, true, true, true],
-    openRow: null, confirmSettle: null, person: null, mode: 'connecting'
+    openRow: null, confirmSettle: null, person: null, payFrom: null, payTo: null, mode: 'connecting'
   };
   let db = null;
 
@@ -430,7 +459,7 @@ const SUPABASE_ANON_KEY = 'sb_publishable_tMH2TCwNLfZ6wof_tdgeWg_u9HALs2m'; // t
     const meta = e.kind === 'settle'
       ? date + nm(e.payer) + ' paid ' + nm(e.split.indexOf(true))
       : date + nm(e.payer) + ' paid · ' + (n === 4 ? 'split 4 ways' : n === 1 ? 'for ' + nm(e.split.indexOf(true)) : 'split ' + n + ' ways');
-    const title = e.kind === 'settle' ? 'Settlement' : esc(e.note);
+    const title = e.kind === 'settle' ? (e.note && e.note !== 'Settlement' ? 'Settlement · ' + esc(e.note) : 'Settlement') : esc(e.note);
     return '<li class="item' + (e.kind === 'settle' ? ' settle' : '') + (e.pending ? ' pending' : '') + '">' +
       '<button type="button" class="item-row" data-action="row" data-id="' + esc(e.id) + '" aria-expanded="' + open + '"' + (e.pending ? ' disabled' : '') + '>' +
       '<img src="' + AV[e.payer] + '" alt=""><span class="grow"><span class="ttl">' + title + '</span><span class="small">' + (e.pending ? 'Saving…' : meta) + '</span></span>' +
@@ -489,12 +518,13 @@ const SUPABASE_ANON_KEY = 'sb_publishable_tMH2TCwNLfZ6wof_tdgeWg_u9HALs2m'; // t
           const key = m.from + '-' + m.to + '-' + m.amount;
           const confirming = state.confirmSettle === key;
           return '<li class="settle-row"><img src="' + AV[m.from] + '" alt=""><span class="who"><strong>' + nm(m.from) + '</strong> pays <strong>' + nm(m.to) + '</strong> <b>' + fmt(m.amount) + '</b></span>' +
-            (confirming
-              ? '<button type="button" class="btn" data-action="cancelSettle">Cancel</button><button type="button" class="btn primary" data-action="doSettle" data-from="' + m.from + '" data-to="' + m.to + '" data-amount="' + m.amount + '">Confirm paid</button>'
-              : '<button type="button" class="btn" data-action="askSettle" data-key="' + key + '">Mark paid</button>') +
+            '<span class="row-actions">' + (confirming
+              ? '<button type="button" class="btn" data-action="cancelSettle">Cancel</button><button type="button" class="btn primary" data-action="doSettle" data-from="' + m.from + '" data-to="' + m.to + '" data-amount="' + m.amount + '">Confirm paid in full</button>'
+              : '<button type="button" class="btn" data-action="partSettle" data-from="' + m.from + '" data-to="' + m.to + '">Part paid</button><button type="button" class="btn" data-action="askSettle" data-key="' + key + '">Mark paid</button>') + '</span>' +
             '</li>';
         }).join('')
       : '<li class="empty"><strong>Everyone is square</strong><span>Nobody owes anything right now.</span></li>');
+    renderPayForm(moves);
     const paid = state.expenses.filter((e) => e.kind === 'settle');
     $('historyWrap').hidden = paid.length === 0;
     setHTML($('settleHistory'), paid.map(itemHTML).join(''));
@@ -542,6 +572,27 @@ const SUPABASE_ANON_KEY = 'sb_publishable_tMH2TCwNLfZ6wof_tdgeWg_u9HALs2m'; // t
     setTimeout(() => $('person').querySelector('.close-btn').focus(), 30);
   }
   function closePerson() { state.person = null; $('person').hidden = true; }
+
+  function renderPayForm(moves) {
+    if (!moves) moves = compute().moves;
+    const f = state.payFrom, t = state.payTo;
+    const btn = (i, act, on, dis) => '<button type="button" class="payer" data-action="' + act + '" data-i="' + i + '" aria-pressed="' + on + '"' + (dis ? ' disabled' : '') + '><img src="' + AV[i] + '" alt=""><span>' + nm(i) + '</span></button>';
+    setHTML($('payFrom'), ALL.map((i) => btn(i, 'payFrom', f === i, false)).join(''));
+    setHTML($('payTo'), ALL.map((i) => btn(i, 'payTo', t === i, f === i)).join(''));
+    const amt = parseAmt($('payAmt').value);
+    let hint;
+    if (f == null || t == null) hint = 'Pick who paid and who got the money.';
+    else {
+      const owed = moves.filter((m) => m.from === f && m.to === t).reduce((a, m) => a + m.amount, 0);
+      if (!owed) hint = nm(f) + ' doesn\u2019t owe ' + nm(t) + ' anything right now. You can still record it.';
+      else if (!amt) hint = nm(f) + ' owes ' + nm(t) + ' ' + fmt(owed) + '.';
+      else if (amt < owed) hint = 'Part payment. ' + nm(f) + ' will still owe ' + fmt(owed - amt) + '.';
+      else if (Math.round(amt) === owed) hint = 'This settles it in full.';
+      else hint = fmt(amt - owed) + ' more than ' + nm(f) + ' owes.';
+    }
+    $('payHint').textContent = hint;
+    $('payBtn').disabled = !(f != null && t != null && f !== t && amt > 0);
+  }
 
   function renderLists() { const c = compute(); renderHome(c); renderSettle(c); renderPerson(c); }
 
@@ -659,6 +710,13 @@ const SUPABASE_ANON_KEY = 'sb_publishable_tMH2TCwNLfZ6wof_tdgeWg_u9HALs2m'; // t
       const ok = await addExpense({ kind: 'settle', note: 'Settlement', amount, payer: from, split, createdAt: Date.now() });
       if (!ok) toast('Couldn’t save the payment. Check your connection and try again.');
     }
+    else if (a === 'payFrom') { const i = Number(el.dataset.i); state.payFrom = i; if (state.payTo === i) state.payTo = null; renderPayForm(); }
+    else if (a === 'payTo') { state.payTo = Number(el.dataset.i); renderPayForm(); }
+    else if (a === 'partSettle') {
+      state.payFrom = Number(el.dataset.from); state.payTo = Number(el.dataset.to); $('payAmt').value = ''; renderPayForm();
+      $('payForm').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      setTimeout(() => $('payAmt').focus({ preventScroll: true }), 300);
+    }
     else if (a === 'person') { openPerson(Number(el.dataset.i)); }
     else if (a === 'closePerson') { closePerson(); }
     else if (a === 'settings') { openSettings(); }
@@ -669,6 +727,22 @@ const SUPABASE_ANON_KEY = 'sb_publishable_tMH2TCwNLfZ6wof_tdgeWg_u9HALs2m'; // t
   document.addEventListener('keydown', (ev) => { if (ev.key !== 'Escape') return; if (!$('settings').hidden) $('settings').hidden = true; if (!$('person').hidden) closePerson(); });
 
   $('amt').addEventListener('input', renderSummary);
+  $('payAmt').addEventListener('input', () => renderPayForm());
+  $('payForm').addEventListener('submit', async (ev) => {
+    ev.preventDefault();
+    const amount = parseAmt($('payAmt').value), from = state.payFrom, to = state.payTo;
+    if (!(amount > 0) || from == null || to == null || from === to) return;
+    const noteText = $('payNote').value;
+    const e = { kind: 'settle', note: noteText.trim().slice(0, 60) || 'Settlement', amount, payer: from, split: ALL.map((i) => i === to), createdAt: Date.now() };
+    $('payAmt').value = ''; $('payNote').value = ''; $('payAmt').blur();
+    state.payFrom = null; state.payTo = null; renderPayForm();
+    toast('Recorded ' + fmt(amount) + ' from ' + (state.names[from] || '') + ' to ' + (state.names[to] || ''));
+    const ok = await addExpense(e);
+    if (!ok) {
+      $('payAmt').value = String(amount); $('payNote').value = noteText; state.payFrom = from; state.payTo = to; renderPayForm();
+      toast('Couldn\u2019t save the payment. Check your connection and try again.');
+    }
+  });
   $('addForm').addEventListener('submit', async (ev) => {
     ev.preventDefault();
     const amount = parseAmt($('amt').value);
